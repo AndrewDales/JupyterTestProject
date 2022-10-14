@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import ttk
 import matplotlib
 import matplotlib.pyplot as plt
-import pandas as pd
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 import yfinance as yf
 import datetime
@@ -32,8 +31,8 @@ def get_stock_data(ticker):
 
 
 class GraphPage(tk.Frame):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self):
+        super().__init__()
 
         title = tk.Label(self, text='Stock Price Viewer',
                          padx=10, pady=10, font=('Arial', 14))
@@ -57,15 +56,15 @@ class GraphPage(tk.Frame):
         fig = plt.figure()
         canvas = FigureCanvasTkAgg(fig, master=self)
         toolbar = NavigationToolbar2Tk(canvas, self, pack_toolbar=False)
-        canvas.get_tk_widget().grid(row=1, column=1, rowspan=6)
-        toolbar.grid(row=7, column=1)
+        canvas.get_tk_widget().grid(row=1, column=1, rowspan=6, padx=10, pady=5)
+        toolbar.grid(row=7, column=1, pady=5)
 
         self.stock_df = None
         self.stock_info = None
         # Will get stock info according to the ticker selected in the ComboBox
         self.choose_stock()
 
-    def choose_stock(self, *args):
+    def choose_stock(self):
         # Gets the stock code that is currently chosen in the stock ComboBox
         stock = self.stock_choice.get()
         # Retrieves stock prices and info about the stock
