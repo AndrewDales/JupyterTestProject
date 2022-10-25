@@ -1,17 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
-import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from matplotlib.figure import Figure
 import yfinance as yf
 import datetime
 import numpy as np
 
-matplotlib.use('TkAgg')
 plt.style.use('ggplot')
 
 
-def plot_stock_price(price_data, start=None, end=None, name=None):
+def plot_stock_price(price_data, name=None):
     plt.clf()
     plt.plot(price_data["Close"])
     ax = plt.gca()
@@ -42,6 +41,8 @@ class GraphPage(tk.Frame):
         stock_label.grid(row=2, column=0)
 
         self.stock_num = tk.StringVar()
+        self.stock_num.trace_add('write', self.choose_stock)
+
         self.stock_choice = ttk.Combobox(self, textvariable=self.stock_num)
         self.stock_choice['values'] = ('BARC.L',
                                        'MKS.L',
@@ -51,10 +52,11 @@ class GraphPage(tk.Frame):
                                        'DIS')
         self.stock_choice.current(0)
         self.stock_choice.grid(row=3, column=0, padx=10)
-        self.stock_num.trace_add('write', self.choose_stock)
 
-        fig = plt.figure()
+        fig = Figure(figsize=(5, 4), dpi=100)
         canvas = FigureCanvasTkAgg(fig, master=self)
+        # canvas.draw()
+
         toolbar = NavigationToolbar2Tk(canvas, self, pack_toolbar=False)
         canvas.get_tk_widget().grid(row=1, column=1, rowspan=6, padx=10, pady=5)
         toolbar.grid(row=7, column=1, pady=5)
@@ -64,9 +66,10 @@ class GraphPage(tk.Frame):
         # Will get stock info according to the ticker selected in the ComboBox
         self.choose_stock()
 
-    def choose_stock(self):
+    def choose_stock(self, *args):
         # Gets the stock code that is currently chosen in the stock ComboBox
         stock = self.stock_choice.get()
+        print(stock)
         # Retrieves stock prices and info about the stock
         self.stock_df, self.stock_info = get_stock_data(stock)
         self.plot_graph()
