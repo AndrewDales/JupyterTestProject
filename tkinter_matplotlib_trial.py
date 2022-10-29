@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import Tk, Button
 import numpy as np
+import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.backend_bases import key_press_handler
 from matplotlib.figure import Figure
@@ -14,7 +15,7 @@ class GraphFrame(tk.Frame):
         # Draw button
         draw_button = Button(self, text="Shift!", command=self.plot_shift)
 
-        # Figure and canvas
+        # Figure and tk_canvas
         self.fig = Figure(figsize=(5, 4), dpi=100)
         self.ax = self.fig.add_subplot()
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
@@ -40,7 +41,7 @@ class GraphFrame(tk.Frame):
         self.ax.set_title(f'Sine wave shifted left {self.shift:.1f} radians')
         self.ax.legend(loc='upper right')
 
-        # update canvas
+        # update tk_canvas
         self.canvas.draw()
 
     def plot_shift(self):
@@ -48,6 +49,7 @@ class GraphFrame(tk.Frame):
         self.draw_plot()
 
 
+plt.style.use('ggplot')
 # GUI
 # matplotlib.use('TkAgg')
 root = Tk()

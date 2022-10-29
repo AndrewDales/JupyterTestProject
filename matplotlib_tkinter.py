@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from matplotlib.figure import Figure
@@ -8,18 +9,19 @@ import datetime
 import numpy as np
 
 plt.style.use('ggplot')
+matplotlib.use('TkAgg', force=True)
 
 
-def plot_stock_price(price_data, name=None):
-    plt.clf()
-    plt.plot(price_data["Close"])
-    ax = plt.gca()
+def plot_stock_price(price_data, name=None, ax=None):
+    if ax is None:
+        ax = plt.gca()
+    ax.clear()
+    ax.plot(price_data["Close"])
     if name:
         ax.set(title=f'{name} Close Price')
     else:
         ax.set(title='Close Price')
-    # just plt.draw() won't do!
-    plt.gcf().canvas.draw()
+    return ax
 
 
 def get_stock_data(ticker):
@@ -38,10 +40,10 @@ class GraphPage(tk.Frame):
         title.grid(row=0, column=1)
 
         stock_label = tk.Label(self, text='Choose stock:')
-        stock_label.grid(row=2, column=0)
+        stock_label.grid(row=1, column=0, sticky='s')
 
+        self.tk_axes = None
         self.stock_num = tk.StringVar()
-        self.stock_num.trace_add('write', self.choose_stock)
 
         self.stock_choice = ttk.Combobox(self, textvariable=self.stock_num)
         self.stock_choice['values'] = ('BARC.L',
@@ -51,15 +53,19 @@ class GraphPage(tk.Frame):
                                        'T',
                                        'DIS')
         self.stock_choice.current(0)
-        self.stock_choice.grid(row=3, column=0, padx=10)
+        self.stock_choice.grid(row=2, column=0, padx=10, sticky='n')
 
-        fig = Figure(figsize=(5, 4), dpi=100)
-        canvas = FigureCanvasTkAgg(fig, master=self)
-        # canvas.draw()
+        self.fig = Figure(figsize=(5, 4), dpi=100)
+        self.tk_axes = self.fig.add_subplot()
+        self.tk_canvas = FigureCanvasTkAgg(self.fig, master=self)
 
-        toolbar = NavigationToolbar2Tk(canvas, self, pack_toolbar=False)
-        canvas.get_tk_widget().grid(row=1, column=1, rowspan=6, padx=10, pady=5)
-        toolbar.grid(row=7, column=1, pady=5)
+        # Code will run self.choose_stock when ever the stock_num variable changes
+        # (via the stock_choice Combobox
+        self.stock_num.trace_add('write', self.choose_stock)
+
+        toolbar = NavigationToolbar2Tk(self.tk_canvas, self, pack_toolbar=False)
+        self.tk_canvas.get_tk_widget().grid(row=1, column=1, rowspan=2, padx=10, pady=5)
+        toolbar.grid(row=3, column=1, pady=5)
 
         self.stock_df = None
         self.stock_info = None
@@ -77,7 +83,10 @@ class GraphPage(tk.Frame):
     # Plot the current stock data
     def plot_graph(self):
         name = self.stock_info.info['shortName']
-        plot_stock_price(self.stock_df, name=name)
+        plot_stock_price(self.stock_df, name=name, ax=self.tk_axes)
+
+        # update tk_canvas
+        self.tk_canvas.draw()
 
 
 if __name__ == "__main__":

@@ -41,7 +41,7 @@ def update_frequency(new_val):
     y = 2 * np.sin(2 * np.pi * f * t)
     line.set_data(t, y)
 
-    # required to update canvas and attached toolbar!
+    # required to update tk_canvas and attached toolbar!
     canvas.draw()
 
 
@@ -50,7 +50,7 @@ slider_update = tkinter.Scale(root, from_=1, to=5, orient=tkinter.HORIZONTAL,
 
 # Packing order is important. Widgets are processed sequentially and if there
 # is no space left, because the window is too small, they are not displayed.
-# The canvas is rather flexible in its size, so we pack it last which makes
+# The tk_canvas is rather flexible in its size, so we pack it last which makes
 # sure the UI controls are displayed as long as possible.
 button_quit.pack(side=tkinter.BOTTOM)
 slider_update.pack(side=tkinter.BOTTOM)
