@@ -9,3 +9,4 @@
 - **RealPython_Pandas** - experiment with pandas using a Jupyter notebook. Follows examples from [Real Python - Using Pandas and Python to Explore Your Dataset](https://realpython.com/pandas-python-explore-dataset/)
 - **Jupyter_markdown** - experiments with using markdown in a Jupyter notebook
 - **tkinter_matplotlib_trial** - simple example of a matplotlib plot, with an interactive button in tkinter
+- **embedding_in_tk_tutoria_example** - code example for embedding in tkinter taken from the matplotlib documentation: [Embedding in Tk](https://matplotlib.org/stable/gallery/user_interfaces/embedding_in_tk_sgskip.html)
